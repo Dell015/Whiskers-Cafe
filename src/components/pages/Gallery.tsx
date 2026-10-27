@@ -25,18 +25,18 @@ function Column({
   shots,
   shown,
   progress,
-  offset,
+  range,
   root,
   onOpen,
 }: {
   shots: Shot[];
   shown: Shot[];
   progress: MotionValue<number>;
-  offset: number;
+  range: [number, number];
   root: RefObject<HTMLElement | null>;
   onOpen: (i: number) => void;
 }) {
-  const y = useTransform(progress, [0, 1], [offset, -offset]);
+  const y = useTransform(progress, [0, 1], range);
   return (
     <motion.div style={{ y }} className="flex flex-1 flex-col gap-3 md:gap-5">
       {shots.map((s) => (
@@ -63,6 +63,14 @@ function Column({
     </motion.div>
   );
 }
+
+/** [start, end] drift per column. Starts are never negative so nothing rides up over the filter chips. */
+const RANGES = [
+  [60, -30],
+  [0, -90],
+  [90, -60],
+  [30, -120],
+];
 
 function useColumnCount() {
   const [n, setN] = useState(2);
@@ -195,7 +203,7 @@ export default function Gallery({ active }: { active: boolean }) {
               shots={shown.filter((_, i) => i % cols === c)}
               shown={shown}
               progress={scrollYProgress}
-              offset={reduce ? 0 : (c % 2 ? -1 : 1) * (cols === 2 ? 28 : 60)}
+              range={reduce ? [0, 0] : RANGES[c].map((v) => v * (cols === 2 ? 0.5 : 1)) as [number, number]}
               root={rootRef}
               onOpen={setOpen}
             />
