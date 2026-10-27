@@ -156,8 +156,8 @@ export default function Home({
               objectPosition="50% 30%"
             />
             <Polaroid
-              src={shot("cats/tortoise-glasses").src}
-              alt="A fluffy white cat wearing tortoise-shell glasses"
+              src={shot("cats/blue-glasses").src}
+              alt="A sleepy white and brown cat wearing round blue glasses"
               aspect="4/5"
               rotate={-7}
               className="absolute -bottom-6 -left-2 w-[34%] sm:-left-6"
@@ -301,9 +301,6 @@ export default function Home({
                     className="object-cover"
                     style={{ objectPosition: t.pos ?? "50% 50%" }}
                   />
-                  <span className="absolute bottom-2 left-2 rounded-full bg-paper/90 px-3 py-0.5 font-hand text-lg leading-tight text-ink">
-                    {sh.caption}
-                  </span>
                 </Reveal>
               );
             })}

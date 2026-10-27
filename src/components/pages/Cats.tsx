@@ -17,16 +17,17 @@ import {
 
 function CatBubbles() {
   const bubbles = [
-    { src: shot("cats/black-monalisa").src, pos: "50% 60%", cls: "left-0 top-10", delay: 0 },
-    { src: shot("cats/white-tower").src, pos: "50% 30%", cls: "left-[30%] top-0", delay: 0.6 },
-    { src: shot("cats/tortoise-glasses").src, pos: "50% 40%", cls: "left-[60%] top-14", delay: 1.2 },
+    { src: shot("cats/black-monalisa").src, pos: "50% 60%", cls: "left-0 top-12", delay: 0 },
+    { src: shot("cats/white-tower").src, pos: "50% 30%", cls: "left-[23%] top-0", delay: 0.5 },
+    { src: shot("cats/blue-glasses").src, pos: "50% 40%", cls: "left-[46%] top-16", delay: 1 },
+    { src: shot("cats/kitten-tree").src, pos: "50% 45%", cls: "left-[69%] top-4", delay: 1.5 },
   ];
   return (
     <div aria-hidden className="relative mx-auto h-64 w-full max-w-md md:h-72">
       {bubbles.map((b) => (
         <motion.div
           key={b.src}
-          className={`absolute h-36 w-36 overflow-hidden rounded-full border-4 border-white shadow-[0_10px_24px_-8px_rgba(74,42,23,0.6)] md:h-44 md:w-44 ${b.cls}`}
+          className={`absolute h-28 w-28 overflow-hidden rounded-full border-4 border-white shadow-[0_10px_24px_-8px_rgba(74,42,23,0.6)] md:h-[8.5rem] md:w-[8.5rem] ${b.cls}`}
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: b.delay }}
         >
@@ -34,7 +35,7 @@ function CatBubbles() {
             src={b.src}
             alt=""
             fill
-            sizes="176px"
+            sizes="140px"
             className="object-cover"
             style={{ objectPosition: b.pos }}
           />
@@ -65,13 +66,6 @@ const CATS = [
     photo: "Snoozing in a pair of blue glasses",
     rotate: -1,
     pos: "50% 45%",
-  },
-  {
-    src: shot("cats/tortoise-glasses").src,
-    alt: "A fluffy white cat wearing tortoise-shell round glasses",
-    photo: "Fluffy white cat, very studious",
-    rotate: 2,
-    pos: "50% 40%",
   },
   {
     src: shot("cats/kitten-tree").src,
