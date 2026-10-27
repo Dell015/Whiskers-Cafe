@@ -4,7 +4,9 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { MENU, peso, type Group } from "@/lib/menu";
 import {
-  PAGE_PAD,
+  PAGE_ROOT,
+  BODY,
+  Band,
   PageFooter,
   Polaroid,
   Reveal,
@@ -30,7 +32,7 @@ function GroupBlock({ group }: { group: Group }) {
           {cols && (
             <div className="flex text-xs font-bold uppercase tracking-wide text-cocoa">
               {cols.map((c) => (
-                <span key={c} className="w-16 text-right">
+                <span key={c} className="w-[4.5rem] text-right">
                   {c}
                 </span>
               ))}
@@ -59,7 +61,7 @@ function GroupBlock({ group }: { group: Group }) {
                 {item.prices.map((p, i) => (
                   <span
                     key={i}
-                    className={`w-16 text-right ${p == null ? "text-ink/30" : ""}`}
+                    className={`w-[4.5rem] text-right ${p == null ? "text-ink/30" : ""}`}
                   >
                     {peso(p)}
                   </span>
@@ -78,9 +80,10 @@ export default function Menu({ active }: { active: boolean }) {
   const current = MENU.find((c) => c.id === tab) ?? MENU[0];
 
   return (
-    <div className={PAGE_PAD}>
+    <div className={PAGE_ROOT}>
+      <Band>
       <Reveal active={active}>
-        <SectionHeading kicker="sip and snack" title="The menu">
+        <SectionHeading tone="light" kicker="sip and snack" title="The menu">
           Easy to scan on a phone, and no need to scroll back through old
           Facebook posts to find it.
         </SectionHeading>
@@ -89,6 +92,8 @@ export default function Menu({ active }: { active: boolean }) {
           confirm with the cafe.
         </p>
       </Reveal>
+      </Band>
+      <div className={BODY}>
 
       <div
         role="tablist"
@@ -159,6 +164,7 @@ export default function Menu({ active }: { active: boolean }) {
         )}
       </div>
 
+      </div>
       <PageFooter />
     </div>
   );

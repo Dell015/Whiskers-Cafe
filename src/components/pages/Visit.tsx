@@ -4,7 +4,9 @@ import { useState, type FormEvent } from "react";
 import { SITE } from "@/lib/site";
 import {
   Card,
-  PAGE_PAD,
+  PAGE_ROOT,
+  BODY,
+  Band,
   PageFooter,
   Paw,
   Placeholder,
@@ -62,13 +64,16 @@ export default function Visit({ active }: { active: boolean }) {
     "w-full rounded-lg border-2 border-cocoa/30 bg-white px-3 py-2 text-ink focus:border-pumpkin focus:outline-none";
 
   return (
-    <div className={PAGE_PAD}>
+    <div className={PAGE_ROOT}>
+      <Band>
       <Reveal active={active}>
-        <SectionHeading kicker="come say hi" title="Plan your visit">
+        <SectionHeading tone="light" kicker="come say hi" title="Plan your visit">
           Where to find us, when to come, and how to ask a question without
           digging through Messenger.
         </SectionHeading>
       </Reveal>
+      </Band>
+      <div className={BODY}>
 
       <section className="mt-12 grid gap-8 lg:grid-cols-2">
         <Reveal active={active}>
@@ -196,34 +201,32 @@ export default function Visit({ active }: { active: boolean }) {
             <h3 className="mt-2 font-display text-4xl font-bold leading-none">
               Find us online
             </h3>
-            <ul className="mt-4 space-y-3 text-lg">
-              <li>
-                <a
-                  className="font-bold text-pumpkin underline underline-offset-4"
-                  href={SITE.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Facebook
-                </a>
-                <span className="text-ink/70"> for news and messages</span>
-              </li>
-              <li>
-                <a
-                  className="font-bold text-pumpkin underline underline-offset-4"
-                  href={SITE.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Instagram
-                </a>
-                <span className="text-ink/70"> @whiskers_cafe_</span>
-              </li>
-            </ul>
+            <p className="mt-2 text-ink/75">
+              News and messages on Facebook, photos on Instagram.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <a
+                href={SITE.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-ink px-6 py-3 font-bold text-paper shadow-[0_6px_0_0_#2a160a] transition active:translate-y-1 active:shadow-none"
+              >
+                Facebook
+              </a>
+              <a
+                href={SITE.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full border-2 border-ink px-6 py-3 font-bold text-ink transition hover:bg-paper"
+              >
+                Instagram
+              </a>
+            </div>
           </Card>
         </Reveal>
       </section>
 
+      </div>
       <PageFooter />
     </div>
   );

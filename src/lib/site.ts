@@ -24,3 +24,9 @@ export type PageId = (typeof PAGES)[number]["id"];
 export function isPageId(value: string): value is PageId {
   return PAGES.some((p) => p.id === value);
 }
+
+/**
+ * The cafe's own house rules, shown on the Cats page.
+ * Leave empty to show fill-in-the-blank placeholders, or add one string per rule.
+ */
+export const HOUSE_RULES: string[] = [];

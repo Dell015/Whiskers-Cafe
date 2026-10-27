@@ -37,18 +37,22 @@ export default function Board() {
   }, []);
 
   useEffect(() => {
-    const measure = () =>
+    let settle: ReturnType<typeof setTimeout> | undefined;
+    // Re-measuring (resize, rotation, mobile address bar) must not animate.
+    const measure = () => {
       setSize({ w: window.innerWidth, h: window.innerHeight });
+      setInstant(true);
+      if (settle) clearTimeout(settle);
+      settle = setTimeout(() => setInstant(false), 150);
+    };
     const onPop = () => {
       setActive(readHash());
       startTravel();
     };
     // Reading the hash and the window size has to wait until the client mounts.
-    let settle: ReturnType<typeof setTimeout> | undefined;
     const init = requestAnimationFrame(() => {
       setActive(readHash());
       measure();
-      settle = setTimeout(() => setInstant(false), 120);
     });
     window.addEventListener("resize", measure);
     window.addEventListener("popstate", onPop);
@@ -180,7 +184,7 @@ export default function Board() {
                       ref={(el) => {
                         scrollers.current[p.id] = el;
                       }}
-                      className="h-full overflow-y-auto overscroll-contain"
+                      className="h-full overflow-y-auto overflow-x-hidden overscroll-contain"
                     >
                       {p.id === "home" && <Home active={active === "home"} go={go} />}
                       {p.id === "cats" && <Cats active={active === "cats"} />}
@@ -188,10 +192,6 @@ export default function Board() {
                       {p.id === "events" && <Events active={active === "events"} />}
                       {p.id === "visit" && <Visit active={active === "visit"} />}
                     </div>
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute inset-3 rounded-[24px] border border-cocoa/25 md:inset-4"
-                    />
                   </motion.section>
                 ))}
               </>

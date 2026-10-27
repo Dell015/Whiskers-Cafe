@@ -127,21 +127,34 @@ export function Squiggle({ className = "" }: { className?: string }) {
 export function SectionHeading({
   kicker,
   title,
+  tone = "dark",
   children,
 }: {
   kicker: string;
   title: string;
+  tone?: "dark" | "light";
   children?: ReactNode;
 }) {
+  const light = tone === "light";
   return (
-    <header className="max-w-2xl">
-      <p className="font-hand text-2xl text-cocoa">{kicker}</p>
-      <h2 className="font-display text-5xl font-bold leading-[0.95] text-ink md:text-6xl">
+    <header className="max-w-3xl">
+      <p className={`font-hand text-3xl ${light ? "text-tan" : "text-cocoa"}`}>
+        {kicker}
+      </p>
+      <h2
+        className={`font-display text-6xl font-bold leading-[0.92] md:text-7xl ${
+          light ? "text-paper" : "text-ink"
+        }`}
+      >
         {title}
       </h2>
-      <Squiggle className="mt-3" />
+      <Squiggle className="mt-4" />
       {children && (
-        <div className="mt-4 text-base leading-relaxed text-ink/80">
+        <div
+          className={`mt-5 text-lg leading-relaxed ${
+            light ? "text-paper/85" : "text-ink/80"
+          }`}
+        >
           {children}
         </div>
       )}
@@ -193,20 +206,58 @@ export function Paw({ className = "" }: { className?: string }) {
 
 export function PageFooter() {
   return (
-    <footer className="mt-16 border-t-2 border-dashed border-cocoa/25 pt-6 text-sm leading-relaxed text-ink/75">
-      <p className="font-bold text-ink">
-        Concept mockup by {SITE.credit}. Not affiliated with or endorsed by{" "}
-        {SITE.name}.
-      </p>
-      <p className="mt-1">
-        The logo, photos, menu, flyers and artwork shown here belong to{" "}
-        {SITE.name} and were taken from their public Facebook posts for this
-        concept only. Hours, cat details and rules marked as placeholders are
-        not confirmed.
-      </p>
+    <footer className="relative mt-24 bg-bean bean-pattern text-paper/85">
+      <div aria-hidden className="scallop-up absolute inset-x-0 -top-6 h-6" />
+      <div className="mx-auto grid w-full max-w-7xl items-center gap-6 px-5 pb-28 pt-12 md:grid-cols-[auto_1fr] md:gap-10 md:px-10 md:pb-12">
+        <div className="flex items-center gap-3">
+          <span className="relative block h-16 w-16 overflow-hidden rounded-full border-2 border-paper/70 bg-paper">
+            <Image
+              src="/images/logo.webp"
+              alt=""
+              fill
+              sizes="64px"
+              className="object-cover"
+            />
+          </span>
+          <span className="font-display text-3xl font-bold text-paper">
+            {SITE.name}
+          </span>
+        </div>
+        <div className="text-sm leading-relaxed">
+          <p className="font-bold text-paper">
+            Concept mockup by {SITE.credit}. Not affiliated with or endorsed
+            by {SITE.name}.
+          </p>
+          <p className="mt-1">
+            The logo, photos, menu, flyers and artwork shown here belong to{" "}
+            {SITE.name} and were taken from their public Facebook posts for
+            this concept only. Hours, cat details and rules marked as
+            placeholders are not confirmed.
+          </p>
+        </div>
+      </div>
     </footer>
   );
 }
 
-export const PAGE_PAD =
-  "mx-auto w-full max-w-6xl px-5 pb-28 pt-20 md:px-10 md:pb-14 md:pt-32";
+/** The brown header band with a scalloped lower edge that opens every page. */
+export function Band({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`relative z-10 bg-bean bean-pattern text-paper ${className}`}>
+      <div className="mx-auto w-full max-w-7xl px-5 pb-16 pt-24 md:px-10 md:pb-24 md:pt-36">
+        {children}
+      </div>
+      <div aria-hidden className="scallop-down absolute inset-x-0 -bottom-6 h-6" />
+    </div>
+  );
+}
+
+export const PAGE_ROOT = "flex min-h-full flex-col";
+export const BODY =
+  "mx-auto w-full max-w-7xl flex-1 px-5 pt-16 md:px-10 md:pt-24";

@@ -1,8 +1,11 @@
 "use client";
 
+import { HOUSE_RULES } from "@/lib/site";
 import {
   Card,
-  PAGE_PAD,
+  PAGE_ROOT,
+  BODY,
+  Band,
   PageFooter,
   Placeholder,
   Polaroid,
@@ -43,9 +46,10 @@ const CATS = [
 
 export default function Cats({ active }: { active: boolean }) {
   return (
-    <div className={PAGE_PAD}>
+    <div className={PAGE_ROOT}>
+      <Band>
       <Reveal active={active}>
-        <SectionHeading kicker="the real bosses" title="Meet the cats">
+        <SectionHeading tone="light" kicker="the real bosses" title="Meet the cats">
           Every cafe cat gets a profile card: name, personality and whether
           they are a resident or looking for a home.
         </SectionHeading>
@@ -53,6 +57,8 @@ export default function Cats({ active }: { active: boolean }) {
           <Placeholder>Names and details are placeholders</Placeholder>
         </div>
       </Reveal>
+      </Band>
+      <div className={BODY}>
 
       <div className="mt-12 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
         {CATS.map((c, i) => (
@@ -89,40 +95,50 @@ export default function Cats({ active }: { active: boolean }) {
         ))}
       </div>
 
-      <section className="mt-20 grid gap-5 md:grid-cols-2">
+      <section className="mt-20">
         <Reveal active={active}>
-          <Card className="h-full">
-            <p className="font-hand text-2xl text-cocoa">how this works</p>
-            <h3 className="font-display text-3xl font-bold">
-              Easy for the cafe to update
-            </h3>
-            <p className="mt-2 leading-relaxed text-ink/80">
-              In a finished version, adding a new cat or marking one as adopted
-              would be a quick edit to a single list, so the page never goes
-              stale like a pinned Facebook post can.
-            </p>
-          </Card>
-        </Reveal>
-        <Reveal active={active} delay={0.08}>
-          <Card className="h-full">
+          <Card className="mx-auto max-w-2xl">
             <p className="font-hand text-2xl text-cocoa">cat etiquette</p>
-            <h3 className="font-display text-3xl font-bold">
-              House rules <span className="align-middle"><Placeholder>Sample</Placeholder></span>
+            <h3 className="font-display text-4xl font-bold leading-tight">
+              House rules{" "}
+              {HOUSE_RULES.length === 0 && (
+                <span className="align-middle">
+                  <Placeholder>To be added by the cafe</Placeholder>
+                </span>
+              )}
             </h3>
-            <ul className="mt-2 list-disc space-y-1 pl-5 leading-relaxed text-ink/80">
-              <li>Let the cats come to you.</li>
-              <li>Be gentle, and never pick a cat up.</li>
-              <li>No flash photos, please.</li>
-              <li>Keep food and drinks away from the cats.</li>
-            </ul>
-            <p className="mt-3 text-sm text-ink/70">
-              Generic cat cafe etiquette as a stand-in. The cafe sets the real
-              rules.
-            </p>
+            {HOUSE_RULES.length > 0 ? (
+              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-lg leading-relaxed text-ink/85">
+                {HOUSE_RULES.map((r) => (
+                  <li key={r}>{r}</li>
+                ))}
+              </ul>
+            ) : (
+              <>
+                <ul className="mt-4 space-y-4">
+                  {["Rule one", "Rule two", "Rule three"].map((label) => (
+                    <li key={label} className="flex items-center gap-3">
+                      <span
+                        aria-hidden
+                        className="h-6 w-6 shrink-0 rounded-full border-2 border-dashed border-cocoa/40"
+                      />
+                      <span className="flex-1 border-b-2 border-dashed border-cocoa/30 pb-1 text-ink/50">
+                        {label}, written by the cafe
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-sm text-ink/70">
+                  Handling, photos, food and drinks around the cats: the cafe
+                  decides, and their rules go here.
+                </p>
+              </>
+            )}
           </Card>
         </Reveal>
       </section>
 
+      </div>
       <PageFooter />
     </div>
   );

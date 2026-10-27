@@ -11,6 +11,9 @@
   --color-rose-soft: #f3d9d0;
   --color-pumpkin: #e0762b;
   --color-lilac: #ddd2ee;
+  --color-bean: #5e3017;
+  --color-tan: #e9cfa6;
+  --color-glow: #f2a65a;
 
   --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
   --font-hand: "Caveat", "Comic Sans MS", cursive;
@@ -67,4 +70,17 @@ body {
   * {
     scroll-behavior: auto !important;
   }
+}
+
+/* Coffee-bean outlines, echoing the cafe's hiring flyer. */
+.bean-pattern {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260' fill='none' stroke='white' stroke-opacity='.09' stroke-width='2.2'><g transform='translate(50 60) rotate(-28)'><ellipse rx='20' ry='30'/><path d='M0 -27C10 -10 -10 10 0 27'/></g><g transform='translate(180 40) rotate(35)'><ellipse rx='16' ry='24'/><path d='M0 -21C8 -8 -8 8 0 21'/></g><g transform='translate(130 170) rotate(-60)'><ellipse rx='22' ry='33'/><path d='M0 -30C11 -11 -11 11 0 30'/></g><g transform='translate(35 215) rotate(18)'><ellipse rx='14' ry='21'/><path d='M0 -18C7 -7 -7 7 0 18'/></g><g transform='translate(225 225) rotate(-15)'><ellipse rx='17' ry='26'/><path d='M0 -23C9 -9 -9 9 0 23'/></g></svg>");
+}
+
+/* Scalloped edges, like the cloud trim on their hiring flyer. */
+.scallop-down {
+  background: radial-gradient(circle at 50% 0, var(--color-bean) 23px, transparent 24px) 0 0 / 48px 24px repeat-x;
+}
+.scallop-up {
+  background: radial-gradient(circle at 50% 100%, var(--color-bean) 23px, transparent 24px) 0 0 / 48px 24px repeat-x;
 }

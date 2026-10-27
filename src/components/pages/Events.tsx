@@ -3,7 +3,9 @@
 import { SITE } from "@/lib/site";
 import {
   Card,
-  PAGE_PAD,
+  PAGE_ROOT,
+  BODY,
+  Band,
   PageFooter,
   Placeholder,
   Polaroid,
@@ -26,13 +28,16 @@ const RULES = [
 
 export default function Events({ active }: { active: boolean }) {
   return (
-    <div className={PAGE_PAD}>
+    <div className={PAGE_ROOT}>
+      <Band>
       <Reveal active={active}>
-        <SectionHeading kicker="what's happening" title="Events and news">
+        <SectionHeading tone="light" kicker="what's happening" title="Events and news">
           Promos and announcements from the cafe&apos;s Facebook posts, kept
           in one place that is easy to find.
         </SectionHeading>
       </Reveal>
+      </Band>
+      <div className={BODY}>
 
       {/* Halloween */}
       <section className="mt-12 grid items-start gap-10 lg:grid-cols-[18rem_1fr]">
@@ -85,13 +90,13 @@ export default function Events({ active }: { active: boolean }) {
       {/* Timeline + hiring */}
       <section className="mt-20 grid gap-10 lg:grid-cols-2">
         <Reveal active={active}>
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
             <Polaroid
               src="/images/posts/grand-opening.webp"
               alt="The cafe's grand opening poster"
               aspect="7/10"
               rotate={2}
-              className="w-40 shrink-0 sm:w-48"
+              className="w-44 shrink-0 sm:w-48"
               sizes="192px"
             />
             <div>
@@ -116,22 +121,22 @@ export default function Events({ active }: { active: boolean }) {
             <p className="mt-2 leading-relaxed text-ink/80">
               The cafe posted a call for an all-around crew member: customer
               service, cashiering, drinks and food prep, and being comfortable
-              around cats. Applicants send a CV to{" "}
-              <a
-                className="font-bold text-pumpkin underline underline-offset-4"
-                href={`mailto:${SITE.email}`}
-              >
-                {SITE.email}
-              </a>
-              .
+              around cats. Applicants send a CV by email.
             </p>
-            <div className="mt-3">
+            <a
+              href={`mailto:${SITE.email}`}
+              className="mt-4 inline-block rounded-full border-2 border-ink px-5 py-2 font-bold text-ink transition hover:bg-paper"
+            >
+              Email {SITE.email}
+            </a>
+            <div className="mt-4">
               <Placeholder>Taken from an earlier post, may be outdated</Placeholder>
             </div>
           </Card>
         </Reveal>
       </section>
 
+      </div>
       <PageFooter />
     </div>
   );
