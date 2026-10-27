@@ -28,7 +28,7 @@ const REEL = [
 ];
 
 /** A slow, endless reel of drinks and plates. Stays still if motion is reduced. */
-function Marquee() {
+function Marquee({ active }: { active: boolean }) {
   const row = [...REEL, ...REEL];
   return (
     <div
@@ -37,8 +37,12 @@ function Marquee() {
     >
       <motion.div
         className="flex w-max gap-5 px-5"
-        animate={{ x: ["0%", "-50%"] }}
-        transition={{ duration: 48, repeat: Infinity, ease: "linear" }}
+        animate={{ x: active ? ["0%", "-50%"] : "0%" }}
+        transition={
+          active
+            ? { duration: 48, repeat: Infinity, ease: "linear" }
+            : { duration: 0 }
+        }
       >
         {row.map((r, i) => (
           <div
@@ -139,7 +143,7 @@ export default function Menu({ active }: { active: boolean }) {
         variant="kraft"
         kicker="sip and snack"
         title="The menu"
-        below={<Marquee />}
+        below={<Marquee active={active} />}
       >
         <p>
           Easy to scan on a phone, and no need to scroll back through old

@@ -17,6 +17,8 @@ type Size = { w: number; h: number };
 
 const SPRING = { type: "spring", stiffness: 52, damping: 17, mass: 1 } as const;
 const TRAVEL_MS = 1100;
+/** Phones get a short, clean ease instead of a long springy settle. */
+const PHONE_MOVE = { duration: 0.6, ease: [0.4, 0, 0.2, 1] } as const;
 
 function readHash(): PageId {
   const raw = window.location.hash.replace("#", "");
@@ -28,14 +30,23 @@ export default function Board() {
   const [size, setSize] = useState<Size | null>(null);
   const [instant, setInstant] = useState(true);
   const [traveling, setTraveling] = useState(false);
+  const [from, setFrom] = useState<PageId | null>(null);
+  const activeRef = useRef<PageId>("home");
   const scrollers = useRef<Partial<Record<PageId, HTMLDivElement | null>>>({});
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const startTravel = useCallback(() => {
     setTraveling(true);
     if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setTraveling(false), TRAVEL_MS);
+    timer.current = setTimeout(() => {
+      setTraveling(false);
+      setFrom(null);
+    }, TRAVEL_MS);
   }, []);
+
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     let settle: ReturnType<typeof setTimeout> | undefined;
@@ -47,6 +58,7 @@ export default function Board() {
       settle = setTimeout(() => setInstant(false), 150);
     };
     const onPop = () => {
+      setFrom(activeRef.current);
       setActive(readHash());
       startTravel();
     };
@@ -70,6 +82,7 @@ export default function Board() {
     (id: PageId) => {
       if (id === active) return;
       scrollers.current[id]?.scrollTo({ top: 0 });
+      setFrom(active);
       setActive(id);
       startTravel();
       window.history.pushState(null, "", `#${id}`);
@@ -124,7 +137,7 @@ export default function Board() {
             style={{ width: boardW, height: boardH, willChange: "transform" }}
             initial={false}
             animate={{ x: -here.col * cw, y: -here.row * ch }}
-            transition={instant ? { duration: 0 } : SPRING}
+            transition={instant ? { duration: 0 } : phone ? PHONE_MOVE : SPRING}
           >
             {size && (
               <>
@@ -179,6 +192,11 @@ export default function Board() {
                       width: w,
                       height: h,
                       contain: "layout paint",
+                      // On phones only the page we leave and the page we reach are painted.
+                      visibility:
+                        phone && p.id !== active && p.id !== from
+                          ? "hidden"
+                          : "visible",
                     }}
                     initial={false}
                     animate={{ borderRadius: traveling && !phone ? 36 : 0 }}

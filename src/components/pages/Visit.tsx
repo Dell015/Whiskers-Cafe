@@ -76,8 +76,12 @@ export default function Visit({ active }: { active: boolean }) {
             <motion.svg
               viewBox="0 0 64 80"
               className="h-32 w-24 drop-shadow-lg"
-              animate={{ y: [0, -14, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ y: active ? [0, -14, 0] : 0 }}
+              transition={
+                active
+                  ? { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
+                  : { duration: 0 }
+              }
             >
               <path
                 d="M32 78C12 52 6 40 6 28a26 26 0 0 1 52 0c0 12-6 24-26 50Z"

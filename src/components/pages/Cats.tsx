@@ -15,7 +15,7 @@ import {
   Reveal,
 } from "../ui";
 
-function CatBubbles() {
+function CatBubbles({ active }: { active: boolean }) {
   const bubbles = [
     { src: shot("cats/black-monalisa").src, pos: "50% 60%", cls: "left-0 top-12", delay: 0 },
     { src: shot("cats/white-tower").src, pos: "50% 30%", cls: "left-[23%] top-0", delay: 0.5 },
@@ -28,8 +28,12 @@ function CatBubbles() {
         <motion.div
           key={b.src}
           className={`absolute h-28 w-28 overflow-hidden rounded-full border-4 border-white shadow-[0_10px_24px_-8px_rgba(74,42,23,0.6)] md:h-[8.5rem] md:w-[8.5rem] ${b.cls}`}
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: b.delay }}
+          animate={{ y: active ? [0, -10, 0] : 0 }}
+          transition={
+            active
+              ? { duration: 4, repeat: Infinity, ease: "easeInOut", delay: b.delay }
+              : { duration: 0 }
+          }
         >
           <Image
             src={b.src}
@@ -90,7 +94,7 @@ export default function Cats({ active }: { active: boolean }) {
         variant="rose"
         kicker="the real bosses"
         title="Meet the cats"
-        aside={<CatBubbles />}
+        aside={<CatBubbles active={active} />}
       >
         <p>
           Every cafe cat gets a profile card: name, personality and whether
