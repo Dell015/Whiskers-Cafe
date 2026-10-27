@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -26,28 +26,29 @@ function Column({
   shown,
   progress,
   range,
-  root,
   onOpen,
 }: {
   shots: Shot[];
   shown: Shot[];
   progress: MotionValue<number>;
   range: [number, number];
-  root: RefObject<HTMLElement | null>;
   onOpen: (i: number) => void;
 }) {
   const y = useTransform(progress, [0, 1], range);
   return (
-    <motion.div style={{ y }} className="flex flex-1 flex-col gap-3 md:gap-5">
+    <motion.div
+      style={{ y, willChange: "transform" }}
+      className="flex flex-1 flex-col gap-3 md:gap-5"
+    >
       {shots.map((s) => (
         <motion.button
           key={s.id}
           onClick={() => onOpen(shown.indexOf(s))}
           aria-label={s.alt}
-          initial={{ opacity: 0, scale: 0.9, rotate: -1.5 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-          viewport={{ root, amount: 0.15 }}
-          transition={{ type: "spring", stiffness: 120, damping: 18 }}
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className="group relative block w-full overflow-hidden rounded-2xl border-4 border-white bg-paper-deep shadow-[0_8px_18px_-10px_rgba(74,42,23,0.6)]"
           style={{ aspectRatio: s.aspect }}
         >
@@ -157,7 +158,7 @@ export default function Gallery({ active }: { active: boolean }) {
       </PageHeader>
 
       <div className={BODY}>
-        <Reveal active={active}>
+        <Reveal active={active} className="relative z-20">
           <div
             role="tablist"
             aria-label="Photo groups"
@@ -195,7 +196,7 @@ export default function Gallery({ active }: { active: boolean }) {
         <div
           ref={gridRef}
           key={filter}
-          className="mt-8 flex items-start gap-3 pb-16 md:gap-5"
+          className="relative z-0 mt-8 flex items-start gap-3 pb-16 md:gap-5"
         >
           {Array.from({ length: cols }, (_, c) => (
             <Column
@@ -203,8 +204,7 @@ export default function Gallery({ active }: { active: boolean }) {
               shots={shown.filter((_, i) => i % cols === c)}
               shown={shown}
               progress={scrollYProgress}
-              range={reduce ? [0, 0] : RANGES[c].map((v) => v * (cols === 2 ? 0.5 : 1)) as [number, number]}
-              root={rootRef}
+              range={reduce || cols === 2 ? [0, 0] : (RANGES[c] as [number, number])}
               onOpen={setOpen}
             />
           ))}

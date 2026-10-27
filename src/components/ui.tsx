@@ -39,8 +39,8 @@ export function Reveal({
       initial={false}
       animate={
         show
-          ? { y: 0, rotate, opacity: 1, scale: 1 }
-          : { y: 40, rotate: rotate * 1.6, opacity: 0, scale: 0.96 }
+          ? { y: 0, rotate, opacity: 1 }
+          : { y: 28, rotate: rotate * 1.6, opacity: 0 }
       }
       transition={{
         type: "spring",
@@ -67,9 +67,11 @@ export function Parallax({
   const ref = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLElement | null>(null);
   const [ready, setReady] = useState(false);
+  const [phone, setPhone] = useState(true);
   const reduce = useReducedMotion();
   useEffect(() => {
     const id = requestAnimationFrame(() => {
+      setPhone(window.innerWidth < 768);
       rootRef.current =
         ref.current?.closest<HTMLElement>("[data-board-scroller]") ?? null;
       setReady(true);
@@ -84,10 +86,14 @@ export function Parallax({
   const y = useTransform(
     scrollYProgress,
     [0, 1],
-    reduce ? [0, 0] : [distance, -distance],
+    reduce || phone ? [0, 0] : [distance, -distance],
   );
   return (
-    <motion.div ref={ref} style={{ y }} className={className}>
+    <motion.div
+      ref={ref}
+      style={{ y, willChange: "transform" }}
+      className={className}
+    >
       {children}
     </motion.div>
   );

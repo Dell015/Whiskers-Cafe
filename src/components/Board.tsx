@@ -79,6 +79,7 @@ export default function Board() {
 
   const w = size?.w ?? 0;
   const h = size?.h ?? 0;
+  const phone = w > 0 && w < 768;
   const gx = size ? Math.max(200, Math.round(w * 0.16)) : 0;
   const gy = size ? Math.max(200, Math.round(h * 0.16)) : 0;
   const cw = w + gx;
@@ -114,12 +115,13 @@ export default function Board() {
       <div className="board-surface fixed inset-0 overflow-hidden">
         <motion.div
           className="absolute inset-0"
-          animate={{ scale: traveling ? 0.86 : 1 }}
+          style={{ willChange: "transform" }}
+          animate={{ scale: traveling && !phone ? 0.86 : 1 }}
           transition={{ type: "spring", stiffness: 70, damping: 15 }}
         >
           <motion.div
             className="absolute left-0 top-0"
-            style={{ width: boardW, height: boardH }}
+            style={{ width: boardW, height: boardH, willChange: "transform" }}
             initial={false}
             animate={{ x: -here.col * cw, y: -here.row * ch }}
             transition={instant ? { duration: 0 } : SPRING}
@@ -176,9 +178,10 @@ export default function Board() {
                       top: p.row * ch,
                       width: w,
                       height: h,
+                      contain: "layout paint",
                     }}
                     initial={false}
-                    animate={{ borderRadius: traveling ? 36 : 0 }}
+                    animate={{ borderRadius: traveling && !phone ? 36 : 0 }}
                     transition={{ duration: 0.5 }}
                   >
                     <div

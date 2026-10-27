@@ -91,7 +91,7 @@ export default function Nav({
         aria-label="Main"
         className="pointer-events-none fixed inset-x-0 top-12 z-40 hidden justify-center md:flex lg:top-10"
       >
-        <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-cocoa/25 bg-paper/90 px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(74,42,23,0.6)] backdrop-blur">
+        <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-cocoa/25 bg-paper/95 px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(74,42,23,0.6)]">
           <button
             onClick={() => go("home")}
             aria-label={`${SITE.name} home`}
@@ -128,7 +128,7 @@ export default function Nav({
 
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-cocoa/25 bg-paper/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-cocoa/25 bg-paper pb-[env(safe-area-inset-bottom)] md:hidden"
       >
         <ul className="mx-auto flex max-w-md justify-between px-2">
           {PAGES.map((p) => (

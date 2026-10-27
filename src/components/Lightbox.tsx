@@ -56,7 +56,7 @@ export default function Lightbox({
       role="dialog"
       aria-modal="true"
       aria-label={current.caption}
-      className="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-ink/90 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-ink/90 px-4 py-6"
       onClick={onClose}
     >
       <button
