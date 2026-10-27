@@ -1,11 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { SITE } from "@/lib/site";
 
-/** Content that settles into place when its page becomes the active one. */
+/**
+ * Content that settles into place when its page is the active one AND it is
+ * on screen. It plays again whenever it scrolls back into view, up or down.
+ */
 export function Reveal({
   children,
   active,
@@ -19,22 +29,65 @@ export function Reveal({
   className?: string;
   rotate?: number;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.12 });
+  const show = active && inView;
   return (
     <motion.div
+      ref={ref}
       className={className}
       initial={false}
       animate={
-        active
-          ? { y: 0, rotate, opacity: 1 }
-          : { y: 14, rotate: rotate * 1.6, opacity: 0.55 }
+        show
+          ? { y: 0, rotate, opacity: 1, scale: 1 }
+          : { y: 40, rotate: rotate * 1.6, opacity: 0, scale: 0.96 }
       }
       transition={{
         type: "spring",
         stiffness: 90,
         damping: 16,
-        delay: active ? delay : 0,
+        delay: show ? delay : 0,
       }}
     >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Drifts against the scroll of the page it sits in, so layers feel deep. */
+export function Parallax({
+  children,
+  distance = 40,
+  className = "",
+}: {
+  children: ReactNode;
+  distance?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement | null>(null);
+  const [ready, setReady] = useState(false);
+  const reduce = useReducedMotion();
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      rootRef.current =
+        ref.current?.closest<HTMLElement>("[data-board-scroller]") ?? null;
+      setReady(true);
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
+  const { scrollYProgress } = useScroll({
+    container: ready ? rootRef : undefined,
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduce ? [0, 0] : [distance, -distance],
+  );
+  return (
+    <motion.div ref={ref} style={{ y }} className={className}>
       {children}
     </motion.div>
   );
@@ -136,7 +189,13 @@ export function SectionHeading({
 }) {
   const light = tone === "light";
   return (
-    <header className="max-w-3xl">
+    <motion.header
+      className="max-w-3xl"
+      initial={{ opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ amount: 0.3 }}
+      transition={{ type: "spring", stiffness: 90, damping: 16 }}
+    >
       <p className={`font-hand text-3xl ${light ? "text-tan" : "text-cocoa"}`}>
         {kicker}
       </p>
@@ -157,7 +216,7 @@ export function SectionHeading({
           {children}
         </div>
       )}
-    </header>
+    </motion.header>
   );
 }
 
@@ -314,7 +373,11 @@ export function PageHeader({
         <SectionHeading kicker={kicker} title={title}>
           {children}
         </SectionHeading>
-        {aside && <div className="relative">{aside}</div>}
+        {aside && (
+          <Parallax distance={26} className="relative">
+            {aside}
+          </Parallax>
+        )}
       </div>
       {below && <div className="relative pb-16">{below}</div>}
       <Wave className="absolute inset-x-0 -bottom-px h-8 w-full text-paper md:h-12" />

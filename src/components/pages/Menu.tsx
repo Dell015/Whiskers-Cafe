@@ -64,7 +64,13 @@ function Marquee() {
 function GroupBlock({ group }: { group: Group }) {
   const cols = group.cols;
   return (
-    <section className="mb-9 break-inside-avoid">
+    <motion.section
+      className="mb-9 break-inside-avoid"
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ amount: 0.15 }}
+      transition={{ type: "spring", stiffness: 100, damping: 18 }}
+    >
       {(group.title || group.note || cols) && (
         <div className="mb-1 flex items-end justify-between gap-3 border-b-2 border-ink/80 pb-1">
           <div>
@@ -119,7 +125,7 @@ function GroupBlock({ group }: { group: Group }) {
           </li>
         ))}
       </ul>
-    </section>
+    </motion.section>
   );
 }
 

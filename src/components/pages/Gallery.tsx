@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { GROUPS, SHOTS, shot, type Group } from "@/lib/gallery";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
+import { GROUPS, SHOTS, shot, type Group, type Shot } from "@/lib/gallery";
 import Lightbox from "../Lightbox";
 import {
   BODY,
@@ -14,9 +20,86 @@ import {
   Reveal,
 } from "../ui";
 
+/** One masonry column that drifts against the scroll, up and down. */
+function Column({
+  shots,
+  shown,
+  progress,
+  offset,
+  root,
+  onOpen,
+}: {
+  shots: Shot[];
+  shown: Shot[];
+  progress: MotionValue<number>;
+  offset: number;
+  root: RefObject<HTMLElement | null>;
+  onOpen: (i: number) => void;
+}) {
+  const y = useTransform(progress, [0, 1], [offset, -offset]);
+  return (
+    <motion.div style={{ y }} className="flex flex-1 flex-col gap-3 md:gap-5">
+      {shots.map((s) => (
+        <motion.button
+          key={s.id}
+          onClick={() => onOpen(shown.indexOf(s))}
+          aria-label={s.alt}
+          initial={{ opacity: 0, scale: 0.9, rotate: -1.5 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+          viewport={{ root, amount: 0.15 }}
+          transition={{ type: "spring", stiffness: 120, damping: 18 }}
+          className="group relative block w-full overflow-hidden rounded-2xl border-4 border-white bg-paper-deep shadow-[0_8px_18px_-10px_rgba(74,42,23,0.6)]"
+          style={{ aspectRatio: s.aspect }}
+        >
+          <Image
+            src={s.src}
+            alt={s.alt}
+            fill
+            sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw"
+            className="object-cover transition duration-500 group-hover:scale-105"
+          />
+        </motion.button>
+      ))}
+    </motion.div>
+  );
+}
+
+function useColumnCount() {
+  const [n, setN] = useState(2);
+  useEffect(() => {
+    const calc = () =>
+      setN(window.innerWidth >= 1024 ? 4 : window.innerWidth >= 768 ? 3 : 2);
+    const id = requestAnimationFrame(calc);
+    window.addEventListener("resize", calc);
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener("resize", calc);
+    };
+  }, []);
+  return n;
+}
+
 export default function Gallery({ active }: { active: boolean }) {
   const [filter, setFilter] = useState<Group | "all">("all");
   const [open, setOpen] = useState<number | null>(null);
+
+  const cols = useColumnCount();
+  const reduce = useReducedMotion();
+  const gridRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement | null>(null);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      rootRef.current = gridRef.current?.closest<HTMLElement>("[data-board-scroller]") ?? null;
+      setReady(true);
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
+  const { scrollYProgress } = useScroll({
+    container: ready ? rootRef : undefined,
+    target: gridRef,
+    offset: ["start end", "end start"],
+  });
 
   const shown = filter === "all" ? SHOTS : SHOTS.filter((s) => s.group === filter);
   const count = (id: Group | "all") =>
@@ -101,33 +184,23 @@ export default function Gallery({ active }: { active: boolean }) {
           </div>
         </Reveal>
 
-        <motion.div
+        <div
+          ref={gridRef}
           key={filter}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="mt-8 columns-2 gap-3 md:columns-3 md:gap-5 lg:columns-4"
+          className="mt-8 flex items-start gap-3 pb-16 md:gap-5"
         >
-          {shown.map((s, i) => (
-            <button
-              key={s.id}
-              onClick={() => setOpen(i)}
-              className="group relative mb-3 block w-full break-inside-avoid overflow-hidden rounded-2xl border-4 border-white bg-paper-deep text-left shadow-[0_8px_18px_-10px_rgba(74,42,23,0.6)] md:mb-5"
-              style={{ aspectRatio: s.aspect }}
-            >
-              <Image
-                src={s.src}
-                alt={s.alt}
-                fill
-                sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw"
-                className="object-cover transition duration-500 group-hover:scale-105"
-              />
-              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-3 pb-2 pt-8 font-hand text-xl leading-tight text-white">
-                {s.caption}
-              </span>
-            </button>
+          {Array.from({ length: cols }, (_, c) => (
+            <Column
+              key={`${filter}-${cols}-${c}`}
+              shots={shown.filter((_, i) => i % cols === c)}
+              shown={shown}
+              progress={scrollYProgress}
+              offset={reduce ? 0 : (c % 2 ? -1 : 1) * (cols === 2 ? 28 : 60)}
+              root={rootRef}
+              onOpen={setOpen}
+            />
           ))}
-        </motion.div>
+        </div>
       </div>
 
       <PageFooter />

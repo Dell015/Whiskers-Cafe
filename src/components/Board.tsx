@@ -185,7 +185,7 @@ export default function Board() {
                       ref={(el) => {
                         scrollers.current[p.id] = el;
                       }}
-                      className="h-full overflow-y-auto overflow-x-hidden overscroll-contain"
+                      data-board-scroller className="h-full overflow-y-auto overflow-x-hidden overscroll-contain"
                     >
                       {p.id === "home" && <Home active={active === "home"} go={go} />}
                       {p.id === "cats" && <Cats active={active === "cats"} />}

@@ -34,5 +34,5 @@ export function isPageId(value: string): value is PageId {
  */
 export const HOUSE_RULES: string[] = [
   "No outside food.",
-  "No pets, smoking, vaping or solicitation.",
+  "No smoking, vaping or solicitation.",
 ];

@@ -10,6 +10,7 @@ import {
   PAGE_ROOT,
   PageFooter,
   Paw,
+  Parallax,
   Placeholder,
   Polaroid,
   Reveal,
@@ -106,10 +107,11 @@ export default function Home({
             </Reveal>
           </div>
 
+          <Parallax distance={34} className="mx-auto w-full max-w-sm lg:max-w-md">
           <Reveal
             active={active}
             delay={0.12}
-            className="relative mx-auto aspect-[4/5] w-full max-w-sm lg:max-w-md"
+            className="relative aspect-[4/5] w-full"
           >
             <div
               aria-hidden
@@ -163,6 +165,7 @@ export default function Home({
               objectPosition="50% 35%"
             />
           </Reveal>
+          </Parallax>
         </div>
       </Band>
 
